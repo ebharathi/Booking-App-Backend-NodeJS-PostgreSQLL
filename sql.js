@@ -75,4 +75,25 @@ const user=async(id)=>{
         console.log("[+]DISCONNECTED")
     }
 }
-module.exports={signup,login,user}
+const get_all_bus=async()=>{
+    const client=await pool.connect();
+    console.log("CONNECTED");
+    try {
+        const result=await client.query('SELECT * FROM bus')
+        return {
+            error:false,
+            data:result.rows
+        }
+    } catch (error) {
+         console.log("QUERY ERR IN BUS")
+         return {
+            error:true,
+            message:error.message
+         }
+    }
+    finally{
+        await client.release();
+        console.log("DISCONNECTED")
+    }
+}
+module.exports={signup,login,user,get_all_bus}
