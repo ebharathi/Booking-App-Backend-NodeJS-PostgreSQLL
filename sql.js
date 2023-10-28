@@ -116,4 +116,27 @@ const get_seats=async(id)=>{
         console.log("DISCONNECTED")
     }
 }
-module.exports={signup,login,user,get_all_bus,get_seats}
+const updateSeats=async(busId,seats)=>{
+    const client=await pool.connect();
+    console.log("CONNECTED")
+    console.log("QUERY---->",busId,"--->",seats)
+    try {
+        seats.map(async(s)=>{
+            const result=await client.query('UPDATE seat SET isselected=$1 WHERE id=$2 AND bus_id=$3',[true,s.id,busId])
+            console.log("--?",result)
+        })
+        return {
+            error:false
+          }
+    } catch (error) {
+         console.log("QUERY ERR");
+         return {
+            error:true,
+            message:error.message
+         }
+    }
+    finally{
+        await client.release();
+    }
+}
+module.exports={signup,login,user,get_all_bus,get_seats,updateSeats}

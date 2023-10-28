@@ -1,4 +1,4 @@
-const {signup,login,user,get_all_bus,get_seats}=require('../sql')
+const {signup,login,user,get_all_bus,get_seats,updateSeats}=require('../sql')
 const Router=require('express').Router();
 
 Router.post('/signup',async(req,res)=>{
@@ -111,5 +111,29 @@ Router.get('/bus/seat/:id',async(req,res)=>{
         message:error.message
        })
    }
+})
+Router.post('/bus/update',async(req,res)=>{
+  try {
+      await updateSeats(req.body.busId,req.body.seats)
+      .then((resp)=>{
+         if(resp.error==false)
+           res.json({
+             error:false,
+             message:"Updated"
+           })
+           else
+             res.json({
+            error:true,
+            message:"Update failed"
+          })
+      })
+       
+  } catch (error) {
+      console.log("ERROR IN UPDATE")
+      res.json({
+        error:true,
+        message:error.message
+      })
+  }
 })
 module.exports={Router}
