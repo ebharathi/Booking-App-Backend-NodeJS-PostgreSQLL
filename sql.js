@@ -96,4 +96,24 @@ const get_all_bus=async()=>{
         console.log("DISCONNECTED")
     }
 }
-module.exports={signup,login,user,get_all_bus}
+const get_seats=async(id)=>{
+    const client=await pool.connect();
+    console.log("CONNECTED")
+    try {
+         const result=await client.query('SELECT * FROM seat WHERE bus_id=$1 ORDER BY id',[id])
+         return {
+            error:false,
+            data:result.rows
+         } 
+    } catch (error) {
+         return {
+            error:true,
+            message:error.message
+         }
+    }
+    finally{
+        await client.release();
+        console.log("DISCONNECTED")
+    }
+}
+module.exports={signup,login,user,get_all_bus,get_seats}

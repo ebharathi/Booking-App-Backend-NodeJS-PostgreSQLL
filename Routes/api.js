@@ -1,4 +1,4 @@
-const {signup,login,user,get_all_bus}=require('../sql')
+const {signup,login,user,get_all_bus,get_seats}=require('../sql')
 const Router=require('express').Router();
 
 Router.post('/signup',async(req,res)=>{
@@ -88,5 +88,28 @@ Router.get('/bus',async(req,res)=>{
         message:error.message
       })
   }
+})
+Router.get('/bus/seat/:id',async(req,res)=>{
+   try {
+      await get_seats(req.params.id)
+      .then((resp)=>{
+        if(resp.error==false)
+          res.json({
+           error:false,
+           data:resp.data
+          })
+          else
+           res.json({
+            error:true,
+            message:resp.message
+          })
+      })
+   } catch (error) {
+       console.log("ERROR IN GETTING SEATS FORA BUS")
+       res.json({
+        error:true,
+        message:error.message
+       })
+   }
 })
 module.exports={Router}
