@@ -54,4 +54,25 @@ const login=async(email,pass)=>{
          }
     }
 }
-module.exports={signup,login}
+const user=async(id)=>{
+    const client=await pool.connect();
+    console.log("[+]CONNECTED")
+    try {
+        const result=await client.query('SELECT * FROM users WHERE id=$1',[id])
+        return {
+            error:false,
+            data:result.rows[0]
+        }
+    } catch (error) {
+        console.log("QUERY ERROR IN USER")
+        return {
+            error:true,
+            message:error.message
+        }
+    }
+    finally{
+        await client.release();
+        console.log("[+]DISCONNECTED")
+    }
+}
+module.exports={signup,login,user}

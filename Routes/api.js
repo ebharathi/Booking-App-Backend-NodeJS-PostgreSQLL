@@ -1,4 +1,4 @@
-const {signup,login}=require('../sql')
+const {signup,login,user}=require('../sql')
 const Router=require('express').Router();
 
 Router.post('/signup',async(req,res)=>{
@@ -43,6 +43,28 @@ Router.post('/login',async(req,res)=>{
         error:true,
         message:error.message
       })
+  }
+})
+Router.get('/user/:id',(req,res)=>{
+  try {
+    user(req.params.id).then((resp)=>{
+      if(resp.error==false)
+       res.json({
+        error:false,
+        userData:resp.data
+      })
+      else
+        res.json({
+      error:true,
+      message:resp.message
+    })
+    })
+  } catch (error) {
+     console.log("QUERY ERROR");
+     res.json({
+      error:true,
+      message:error.message
+     })
   }
 })
 module.exports={Router}
